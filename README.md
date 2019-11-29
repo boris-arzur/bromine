@@ -4,7 +4,7 @@ bromine
 Bromine is the equivalent of Iodine (https://code.kryo.se/iodine/) written in python/twisted. It is to be used with ssh -D. It doesnt do tunneling per se, it just create a local socket forwarded to a static remote socket (default to ssh).
 
 Usage
-=====
+-----
 
 0. Clone this;
 1. Get a domain and point a subdomain to your server with a NS record (see records section below);
@@ -21,7 +21,7 @@ Usage
 13. `client$ ssh you@127.0.0.1 -p 2222`
 
 Testing
-=======
+-------
 
 You can run
 `python -m unittest`
@@ -36,36 +36,39 @@ Then running the server half looks like:
 You don't need a domain / NS indirection for testing.
 
 Bugs / Issues
-=============
+-------------
 
 I've had issues with ubuntu bionic on arm. Use the Dockerfile if you must.
 You may have to stop systemd-resolved `service systemd-resolved start`, see the the output of `netstat -plnt | grep 53` on your server.
 
-The server may complain about `builtins.OSError: [Errno 22] Invalid argument`, this is _fine_. We forward non-bromine traffic an invalid address...
+The server may complain about `builtins.OSError: [Errno 22] Invalid argument`, this is _fine_. We forward non-bromine traffic to an invalid address...
 
 Bandwidth is _very_ limited, be careful what you run (you cannot use `browsh`, stay with `w3m`).
 
 Please feel free to raise issues if you see anything strange.
 
 Docker (server side)
-====================
+--------------------
 
 Clone, set up a NS redirection, and adapt config.ini then:
+
 0. `docker build -t bromine/0 .`
 1. `docker run -ti --rm -p 53:53/udp -p 53:53 bromine/0`
 
 Records
-=======
+-------
 
 This is how my DNS looks like, see `dig abc.z.konbu.org +trace`
 
+```
 z.konbu.org.            10800   IN      NS      funyu.konbu.org.
 funyu.konbu.org.        10800   IN      A       51.15.241.64
+```
 
 I use gandi.net as registrar, and I was happy with .org, until recently, see https://www.eff.org/deeplinks/2019/11/nonprofit-community-stands-together-protect-org .
 
 Magic
-=====
+-----
 
 From trial and error, I came up with a few magic numbers:
 - client.py SLOW, FAST and REQS are related to DNS query initiation timing;
